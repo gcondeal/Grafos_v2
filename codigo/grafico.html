@@ -20,12 +20,11 @@
             .attr("height", height);
 
     var force = d3.layout.force()
-            .gravity(0.05)
-            .distance(100)
-            .charge(-100)
+
+            .distance(50)
             .size([width, height]);
 
-    d3.json('data/graph_json.txt', function(error, json) {
+    d3.json('data/graph.json', function(error, json) {
         if (error) throw error;
 
         force
@@ -45,7 +44,7 @@
                 .call(force.drag)
 
         node.append("circle")
-                .attr("r", 8);
+                .attr("r", 3);
 
         node.append("text")
                 .attr("dx", 12)

@@ -18,6 +18,9 @@ paradasJson = json.loads(paradas)
 f = open('data/paradas_emt.json', 'w', encoding='utf-8', newline='') #codecs.open('data/paradas_emt.json', 'w')
 f.write(paradas)
 
+c_nodos = {}
+n_nodo = 0
+
 g = nx.DiGraph()
 
 # vamos preparando la lista de nodos y sus relaciones
@@ -34,7 +37,19 @@ for paradasPorLinea in paradasJson:
 
         if paradaOrigen != None and paradaDestino != None:
             # Adds edges from a list
-            g.add_edges_from([(paradaOrigen['codParada'], paradaDestino['codParada'])])
+            nodoOrigen = c_nodos.get(paradaOrigen['codParada'])
+            if nodoOrigen == None:
+                n_nodo += 1
+                nodoOrigen = n_nodo
+                c_nodos[paradaOrigen['codParada']] = nodoOrigen
+
+            nodoDestino = c_nodos.get(paradaDestino['codParada'])
+            if nodoDestino == None:
+                n_nodo += 1
+                nodoDestino = n_nodo
+                c_nodos[paradaDestino['codParada']] = nodoDestino
+
+            g.add_edges_from([(nodoOrigen, nodoDestino)])
             paradaOrigen = paradaDestino
 
 # layout = nx.spring_layout(g)
@@ -70,5 +85,5 @@ print('\tMAX PAGERANK: ', max(pagerank.items(), key=operator.itemgetter(1)))
 
 
 g_json = json_graph.node_link_data(g)
-with open('data/graph_json.txt', 'w') as f:
+with open('data/graph.json', 'w') as f:
     print(json.dump(g_json, f, indent=1))
