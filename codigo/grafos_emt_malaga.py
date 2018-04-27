@@ -19,7 +19,7 @@ f = open('data/paradas_emt.json', 'w', encoding='utf-8', newline='') #codecs.ope
 f.write(paradas)
 
 c_nodos = {}
-n_nodo = 0
+n_nodo = -1 # para que el primer nodo sea el 0
 
 g = nx.DiGraph()
 
@@ -30,18 +30,16 @@ for paradasPorLinea in paradasJson:
     for paradaDeLinea in paradasPorLinea['paradas']:
         if paradaOrigen == None:
             paradaOrigen = paradaDeLinea['parada']
-            g.add_node(paradaOrigen['codParada'],linea=paradasPorLinea['codLinea'],name=paradaOrigen['nombreParada'],latitud=paradaOrigen['latitud'], longitud=paradaOrigen['longitud'])
-        else:
-            paradaDestino = paradaDeLinea['parada']
-            g.add_node(paradaDestino['codParada'],linea=paradasPorLinea['codLinea'],name=paradaDestino['nombreParada'],latitud=paradaDestino['latitud'], longitud=paradaDestino['longitud'])
 
-        if paradaOrigen != None and paradaDestino != None:
-            # Adds edges from a list
             nodoOrigen = c_nodos.get(paradaOrigen['codParada'])
             if nodoOrigen == None:
                 n_nodo += 1
                 nodoOrigen = n_nodo
                 c_nodos[paradaOrigen['codParada']] = nodoOrigen
+
+            g.add_node(nodoOrigen,codParada=paradaOrigen['codParada'],linea=paradasPorLinea['codLinea'],name=paradaOrigen['nombreParada'],latitud=paradaOrigen['latitud'], longitud=paradaOrigen['longitud'])
+        else:
+            paradaDestino = paradaDeLinea['parada']
 
             nodoDestino = c_nodos.get(paradaDestino['codParada'])
             if nodoDestino == None:
@@ -49,8 +47,14 @@ for paradasPorLinea in paradasJson:
                 nodoDestino = n_nodo
                 c_nodos[paradaDestino['codParada']] = nodoDestino
 
+            g.add_node(nodoDestino,codParada=paradaDestino['codParada'],linea=paradasPorLinea['codLinea'],name=paradaDestino['nombreParada'],latitud=paradaDestino['latitud'], longitud=paradaDestino['longitud'])
+
+        if paradaOrigen != None and paradaDestino != None:
+            # Adds edges from a list
+
             g.add_edges_from([(nodoOrigen, nodoDestino)])
             paradaOrigen = paradaDestino
+            nodoOrigen = nodoDestino
 
 # layout = nx.spring_layout(g)
 # nx.draw_networkx_nodes(g, layout, node_size=100, node_color='blue', alpha=0.3)
@@ -66,23 +70,30 @@ print("\tIs directed: ", g.is_directed())
 
 print("\tIs strongly connected: ", nx.is_strongly_connected(g))
 print("\tIs weakly connected: ", nx.is_weakly_connected(g))
-print("\tNº weakly connected nodes: ", nx.number_weakly_connected_components(g))
+print("\tNº weakly connected components: ", nx.number_weakly_connected_components(g))
 
 
-degreeCent = nx.degree_centrality(g)
-closeness = nx.closeness_centrality(g)
-betweenness = nx.betweenness_centrality(g)
-pagerank = nx.pagerank(g)
-print('\tDegree:', degreeCent)
-print('\tMAX DEG: ', max(degreeCent.items(), key=operator.itemgetter(1)))
-print('\tCloseness:', closeness)
-print('\tMAX CLOSENESS: ', max(closeness.items(), key=operator.itemgetter(1)))
-print('\tBetweenness:', betweenness)
-print('\tMAX BETWEENNESS: ', max(betweenness.items(), key=operator.itemgetter(1)))
-print('\tPageRank:', pagerank)
-print('\tMAX PAGERANK: ', max(pagerank.items(), key=operator.itemgetter(1)))
+# degreeCent = nx.degree_centrality(g)
+# closeness = nx.closeness_centrality(g)
+# betweenness = nx.betweenness_centrality(g)
+# pagerank = nx.pagerank(g)
+# print('\tDegree:', degreeCent)
+# print('\tMAX DEG: ', max(degreeCent.items(), key=operator.itemgetter(1)))
+# print('\tCloseness:', closeness)
+# print('\tMAX CLOSENESS: ', max(closeness.items(), key=operator.itemgetter(1)))
+# print('\tBetweenness:', betweenness)
+# print('\tMAX BETWEENNESS: ', max(betweenness.items(), key=operator.itemgetter(1)))
+# print('\tPageRank:', pagerank)
+# print('\tMAX PAGERANK: ', max(pagerank.items(), key=operator.itemgetter(1)))
 
+# calculamos el grado de cada nodo para usarlo posteriormente en el gráfico
 
+dicGradosNodos = {}
+
+for gradoNodo in g.degree():
+    dicGradosNodos[gradoNodo[0]] = {"grado":gradoNodo[1]}
+
+nx.set_node_attributes(g,dicGradosNodos)
 
 g_json = json_graph.node_link_data(g)
 with open('data/graph.json', 'w') as f:
