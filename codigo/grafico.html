@@ -78,6 +78,10 @@
                 .on('mouseout', tip.hide);
 
         node.append("circle")
+                 .attr('xlink:href', function(d) {
+                    return 'http://maps.google.es/?q=' + d['latitud'] + ' ' + d['longitud']
+
+                })
                 .attr("r", function (d) {
                     if (d['grado'] == '0') {
                         return 3;
