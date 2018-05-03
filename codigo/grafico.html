@@ -43,7 +43,9 @@
                                 "<br>" +
                                 "<strong>Línea: " + d['linea'] + "</strong>" +
                                 "<br>" +
-                                "<strong>Dirección: " + d['name'] + "</strong>";
+                                "<strong>Dirección: " + d['name'] + "</strong>" +
+                                "<br>" + "<br>" +
+                                "<strong>Click para ver en Google Maps</strong>";
 
             });
 
@@ -75,13 +77,15 @@
                 .attr("class", "node")
                 .call(force.drag)
                 .on('mouseover', tip.show)
-                .on('mouseout', tip.hide);
-
-        node.append("circle")
-                 .attr('xlink:href', function(d) {
+                .on('mouseout', tip.hide)
+                .append("a")
+                .attr('xlink:href', function(d) {
                     return 'http://maps.google.es/?q=' + d['latitud'] + ' ' + d['longitud']
 
                 })
+                .attr('target','_blank')
+
+        node.append("circle")
                 .attr("r", function (d) {
                     if (d['grado'] == '0') {
                         return 3;
@@ -89,7 +93,6 @@
                         return 3 + (2 * d['grado']);
                     }
                 })
-
 
 
 

@@ -15,7 +15,7 @@ paradas = response.content.decode('utf-8-sig')
 paradasJson = json.loads(paradas)
 
 #guardamos en disco el fichero descargado
-f = open('data/paradas_emt.json', 'w', encoding='utf-8', newline='') #codecs.open('data/paradas_emt.json', 'w')
+f = open('data/paradas_emt.json', 'w', encoding='utf-8', newline='')
 f.write(paradas)
 
 c_nodos = {}
@@ -56,11 +56,6 @@ for paradasPorLinea in paradasJson:
             paradaOrigen = paradaDestino
             nodoOrigen = nodoDestino
 
-# layout = nx.spring_layout(g)
-# nx.draw_networkx_nodes(g, layout, node_size=100, node_color='blue', alpha=0.3)
-# nx.draw_networkx_edges(g, layout)
-# nx.draw_networkx_labels(g, layout, font_size=8, font_family='sans-serif')
-# plt.show()
 
 
 print("\nMEDIDAS DEL GRAFO")
@@ -73,18 +68,18 @@ print("\tIs weakly connected: ", nx.is_weakly_connected(g))
 print("\tNº weakly connected components: ", nx.number_weakly_connected_components(g))
 
 
-# degreeCent = nx.degree_centrality(g)
-# closeness = nx.closeness_centrality(g)
-# betweenness = nx.betweenness_centrality(g)
-# pagerank = nx.pagerank(g)
-# print('\tDegree:', degreeCent)
-# print('\tMAX DEG: ', max(degreeCent.items(), key=operator.itemgetter(1)))
-# print('\tCloseness:', closeness)
-# print('\tMAX CLOSENESS: ', max(closeness.items(), key=operator.itemgetter(1)))
-# print('\tBetweenness:', betweenness)
-# print('\tMAX BETWEENNESS: ', max(betweenness.items(), key=operator.itemgetter(1)))
-# print('\tPageRank:', pagerank)
-# print('\tMAX PAGERANK: ', max(pagerank.items(), key=operator.itemgetter(1)))
+degreeCent = nx.degree_centrality(g)
+closeness = nx.closeness_centrality(g)
+betweenness = nx.betweenness_centrality(g)
+pagerank = nx.pagerank(g)
+print('\tDegree:', degreeCent)
+print('\tMAX DEG: ', max(degreeCent.items(), key=operator.itemgetter(1)))
+print('\tCloseness:', closeness)
+print('\tMAX CLOSENESS: ', max(closeness.items(), key=operator.itemgetter(1)))
+print('\tBetweenness:', betweenness)
+print('\tMAX BETWEENNESS: ', max(betweenness.items(), key=operator.itemgetter(1)))
+print('\tPageRank:', pagerank)
+print('\tMAX PAGERANK: ', max(pagerank.items(), key=operator.itemgetter(1)))
 
 # calculamos el grado de cada nodo para usarlo posteriormente en el gráfico
 
